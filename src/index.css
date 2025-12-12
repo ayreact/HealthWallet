@@ -1,0 +1,233 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* HealthWallet Nigeria Design System
+   Healthcare-focused color palette with trust-inspiring greens and professional blues
+   All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Core Healthcare Colors */
+    --background: 150 20% 99%;
+    --foreground: 158 40% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 158 40% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 158 40% 10%;
+
+    /* Primary - Healthcare Green */
+    --primary: 158 64% 35%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Professional Blue */
+    --secondary: 210 70% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted tones */
+    --muted: 150 15% 95%;
+    --muted-foreground: 158 20% 40%;
+
+    /* Accent - Warm Orange for CTAs */
+    --accent: 28 90% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Status colors */
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 72% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 10%;
+
+    --info: 210 80% 50%;
+    --info-foreground: 0 0% 100%;
+
+    /* Border and input */
+    --border: 150 20% 88%;
+    --input: 150 20% 88%;
+    --ring: 158 64% 35%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background: 158 40% 15%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 158 64% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 158 40% 22%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 158 30% 25%;
+    --sidebar-ring: 158 64% 45%;
+
+    /* Hero & Special sections */
+    --hero-background: 158 50% 20%;
+    --hero-foreground: 0 0% 100%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(158 64% 35%), hsl(158 64% 45%));
+    --gradient-secondary: linear-gradient(135deg, hsl(210 70% 50%), hsl(210 70% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(158 50% 20%), hsl(158 60% 30%));
+    --gradient-accent: linear-gradient(135deg, hsl(28 90% 55%), hsl(28 90% 65%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(150 20% 98%));
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(158 40% 10% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(158 40% 10% / 0.1);
+    --shadow-lg: 0 10px 25px -3px hsl(158 40% 10% / 0.15);
+    --shadow-glow: 0 0 20px hsl(158 64% 35% / 0.3);
+
+    /* Animation */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 158 30% 8%;
+    --foreground: 150 20% 95%;
+
+    --card: 158 30% 12%;
+    --card-foreground: 150 20% 95%;
+
+    --popover: 158 30% 12%;
+    --popover-foreground: 150 20% 95%;
+
+    --primary: 158 64% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 60% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 158 20% 18%;
+    --muted-foreground: 150 15% 65%;
+
+    --accent: 28 85% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 60% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 85% 50%;
+    --warning-foreground: 0 0% 10%;
+
+    --info: 210 70% 55%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 158 20% 22%;
+    --input: 158 20% 22%;
+    --ring: 158 64% 45%;
+
+    --sidebar-background: 158 35% 10%;
+    --sidebar-foreground: 150 20% 95%;
+    --sidebar-primary: 158 64% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 158 30% 18%;
+    --sidebar-accent-foreground: 150 20% 95%;
+    --sidebar-border: 158 25% 20%;
+    --sidebar-ring: 158 64% 50%;
+
+    --hero-background: 158 40% 12%;
+    --hero-foreground: 0 0% 100%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(158 64% 40%), hsl(158 64% 50%));
+    --gradient-secondary: linear-gradient(135deg, hsl(210 60% 50%), hsl(210 60% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(158 40% 10%), hsl(158 50% 18%));
+    --gradient-accent: linear-gradient(135deg, hsl(28 85% 50%), hsl(28 85% 60%));
+    --gradient-card: linear-gradient(180deg, hsl(158 30% 12%), hsl(158 25% 10%));
+
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.2);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 10px 25px -3px hsl(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 20px hsl(158 64% 45% / 0.4);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/50;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .glass {
+    @apply backdrop-blur-md bg-card/80 border border-border/50;
+  }
+
+  .glass-dark {
+    @apply backdrop-blur-md bg-background/80 border border-border/50;
+  }
+}
+
+@layer components {
+  .page-container {
+    @apply min-h-screen w-full;
+  }
+
+  .content-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .btn-glow {
+    @apply shadow-glow;
+  }
+}
