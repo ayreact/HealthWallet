@@ -450,7 +450,7 @@ export const FamilyFund: React.FC = () => {
                           
                           {claim.txHash && (
                             <a
-                              href={`https://polygonscan.com/tx/${claim.txHash}`}
+                              href={`https://amoy.polygonscan.com/tx/${claim.txHash}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-3"

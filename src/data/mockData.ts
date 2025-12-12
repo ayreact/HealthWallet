@@ -47,7 +47,7 @@ export const mockUsers: User[] = [
     fullName: 'Chioma Adeyemi',
     phoneNumber: '+234 801 234 5678',
     role: 'PATIENT',
-    walletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f12ab3',
+    walletAddress: '0x745a0d1c99dcc7c1016de17847db76b5852aacd6',
     familyPoolId: 'pool-1',
     createdAt: '2024-01-15T10:00:00Z',
     avatar: undefined
@@ -142,7 +142,7 @@ export const mockFamilyPool: FamilyPool = {
       id: 'user-1',
       fullName: 'Chioma Adeyemi',
       email: 'chioma@example.com',
-      walletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f12ab3',
+      walletAddress: '0x745a0d1c99dcc7c1016de17847db76b5852aacd6',
       role: 'admin',
       joinedAt: '2024-01-15T10:00:00Z'
     },
@@ -337,7 +337,7 @@ export const mockDashboardStats: DashboardStats = {
 export const mockHospitalInvoices = [
   {
     id: 'invoice-1',
-    patientWallet: '0x742d35Cc6634C0532925a3b844Bc9e7595f12ab3',
+    patientWallet: '0x745a0d1c99dcc7c1016de17847db76b5852aacd6',
     hospitalWallet: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
     diagnosis: 'Malaria - Plasmodium falciparum',
     cost: 45000,

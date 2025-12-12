@@ -88,7 +88,7 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
                       </span>
                       {activity.txHash && (
                         <a
-                          href={`https://polygonscan.com/tx/${activity.txHash}`}
+                          href={`https://amoy.polygonscan.com/tx/${activity.txHash}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-primary hover:underline"

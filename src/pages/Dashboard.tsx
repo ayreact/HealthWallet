@@ -4,7 +4,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Users, Shield, Plus, ArrowRight, Wallet } from 'lucide-react';
+import { FileText, Users, Shield, Plus, ArrowRight, Wallet, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
@@ -19,7 +19,7 @@ import { formatDistanceToNow } from 'date-fns';
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [recentRecords, setRecentRecords] = useState<MedicalRecord[]>([]);
@@ -35,7 +35,7 @@ export const Dashboard: React.FC = () => {
           recordsApi.getAll(3),
           familyApi.getPool(),
         ]);
-        
+
         setStats(statsData);
         setActivities(activitiesData);
         setRecentRecords(recordsData);
@@ -56,6 +56,7 @@ export const Dashboard: React.FC = () => {
 
   const quickActions = [
     { label: 'Add Record', icon: FileText, href: '/records', color: 'primary' as const },
+    { label: 'Medical Identity', icon: QrCode, href: '/manage-access', color: 'secondary' as const },
     { label: 'Verify Drug', icon: Shield, href: '/verify-drug', color: 'secondary' as const },
     { label: 'Family Fund', icon: Users, href: '/family-fund', color: 'accent' as const },
   ];
@@ -157,9 +158,9 @@ export const Dashboard: React.FC = () => {
                 <div className="text-center py-8">
                   <FileText className="h-12 w-12 text-muted-foreground/50 mx-auto mb-3" />
                   <p className="text-muted-foreground">No records yet</p>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="mt-3"
                     onClick={() => navigate('/records')}
                   >

@@ -97,6 +97,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
               <DropdownMenuItem onClick={() => navigate('/profile')}>
                 Profile
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/manage-access')}>
+                Medical Identity
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/settings')}>
                 Settings
               </DropdownMenuItem>

@@ -14,6 +14,7 @@ import {
   Settings,
   HelpCircle,
   Heart,
+  QrCode,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -29,6 +30,7 @@ const navigation: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['PATIENT'] },
   { name: 'Medical Records', href: '/records', icon: FileText, roles: ['PATIENT'] },
   { name: 'Family Fund', href: '/family-fund', icon: Users, roles: ['PATIENT'] },
+  { name: 'Medical Identity', href: '/manage-access', icon: QrCode, roles: ['PATIENT'] },
   { name: 'Hospital Portal', href: '/hospital/portal', icon: Building2, roles: ['HOSPITAL', 'DOCTOR', 'ADMIN'] },
   { name: 'Drug Verification', href: '/verify-drug', icon: Shield },
 ];

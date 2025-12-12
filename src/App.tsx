@@ -11,6 +11,8 @@ import { DrugVerificationPage } from "./pages/DrugVerification";
 import { FamilyFund } from "./pages/FamilyFund";
 import { HospitalPortal } from "./pages/HospitalPortal";
 import { MedicalRecords } from "./pages/MedicalRecords";
+import { MedicalIdentity } from "./pages/MedicalIdentity";
+import { ManageAccess } from "./pages/ManageAccess";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,8 +38,12 @@ const App = () => (
               <Route path="/hospital/portal" element={<HospitalPortal />} />
               <Route path="/records" element={<MedicalRecords />} />
               <Route path="/records/:id" element={<MedicalRecords />} />
+              <Route path="/manage-access" element={<ManageAccess />} />
               <Route path="*" element={<NotFound />} />
             </Route>
+
+            {/* Public Standalone Route */}
+            <Route path="/medical-identity/:userId" element={<MedicalIdentity />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>

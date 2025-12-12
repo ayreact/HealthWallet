@@ -3,19 +3,19 @@
  * Handles all API calls with mode-aware behavior (production/demo/fallback)
  */
 
-import { 
-  getAppMode, 
-  getApiBaseUrl, 
-  logFallback, 
+import {
+  getAppMode,
+  getApiBaseUrl,
+  logFallback,
   logProductionError,
-  shouldUseMockData 
+  shouldUseMockData
 } from '@/config/appMode';
-import type { 
-  User, 
-  AuthResponse, 
-  MedicalRecord, 
-  FamilyPool, 
-  Claim, 
+import type {
+  User,
+  AuthResponse,
+  MedicalRecord,
+  FamilyPool,
+  Claim,
   DrugVerification,
   ActivityItem,
   DashboardStats,
@@ -25,8 +25,8 @@ import type {
   AppNotification
 } from '@/types';
 import * as db from './localStorage';
-import { 
-  mockDashboardStats, 
+import {
+  mockDashboardStats,
   mockDrugDatabase,
   generateWalletAddress,
   generateTxHash,
@@ -45,43 +45,43 @@ async function apiFetch<T>(
   demoFn: () => T | Promise<T>
 ): Promise<T> {
   const mode = getAppMode();
-  
+
   // Demo mode: always use mock data
   if (mode === 'demo' || shouldUseMockData()) {
     return demoFn();
   }
-  
+
   const baseUrl = getApiBaseUrl();
   const token = db.getAuthToken();
-  
+
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...options.headers,
   };
-  
+
   if (token) {
     (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
   }
-  
+
   try {
     const response = await fetch(`${baseUrl}${endpoint}`, {
       ...options,
       headers,
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    
+
     return await response.json();
   } catch (error) {
     const err = error as Error;
-    
+
     if (mode === 'fallback') {
       logFallback(endpoint, err);
       return demoFn();
     }
-    
+
     logProductionError(endpoint, err);
     throw error;
   }
@@ -111,7 +111,7 @@ export const authApi = {
       if (existingUser) {
         throw new Error('Email already registered');
       }
-      
+
       const newUser: User = {
         id: `user-${Date.now()}`,
         email: data.email,
@@ -120,13 +120,15 @@ export const authApi = {
         role: data.role,
         walletAddress: generateWalletAddress(),
         createdAt: new Date().toISOString(),
+        qrToken: `qt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        isQrEnabled: true,
       };
-      
+
       db.createUser(newUser);
       const token = `demo_token_${Date.now()}`;
       db.setAuthToken(token);
       db.setCurrentUser(newUser);
-      
+
       return {
         id: newUser.id,
         token,
@@ -135,7 +137,7 @@ export const authApi = {
       };
     });
   },
-  
+
   /**
    * Login user
    */
@@ -149,11 +151,11 @@ export const authApi = {
       if (!user) {
         throw new Error('Invalid email or password');
       }
-      
+
       const token = `demo_token_${Date.now()}`;
       db.setAuthToken(token);
       db.setCurrentUser(user);
-      
+
       return {
         id: user.id,
         token,
@@ -162,7 +164,7 @@ export const authApi = {
       };
     });
   },
-  
+
   /**
    * Get current user
    */
@@ -175,7 +177,7 @@ export const authApi = {
       return user;
     });
   },
-  
+
   /**
    * Logout user
    */
@@ -183,7 +185,7 @@ export const authApi = {
     db.setAuthToken(null);
     db.setCurrentUser(null);
   },
-  
+
   /**
    * Check if user is authenticated
    */
@@ -204,7 +206,7 @@ export const recordsApi = {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('type', type);
-    
+
     return apiFetch('/records/upload', {
       method: 'POST',
       body: formData,
@@ -213,16 +215,16 @@ export const recordsApi = {
       // Demo: Simulate OCR and blockchain
       const user = db.getCurrentUser();
       if (!user) throw new Error('Not authenticated');
-      
+
       const ipfsHash = generateIpfsHash();
       const txHash = generateTxHash();
-      
+
       const summaries: Record<string, string> = {
         PRESCRIPTION: 'Medication prescribed for treatment. Please follow dosage instructions carefully.',
         LAB_RESULT: 'Laboratory test results are within normal parameters.',
         VACCINE: 'Vaccination record successfully documented and verified.',
       };
-      
+
       const record: MedicalRecord = {
         id: `record-${Date.now()}`,
         userId: user.id,
@@ -236,9 +238,9 @@ export const recordsApi = {
         verified: true,
         createdAt: new Date().toISOString(),
       };
-      
+
       db.createRecord(record);
-      
+
       // Add activity
       db.addActivity({
         id: `activity-${Date.now()}`,
@@ -249,7 +251,7 @@ export const recordsApi = {
         status: 'success',
         txHash,
       });
-      
+
       return {
         id: record.id,
         aiSummary: record.summary,
@@ -258,7 +260,7 @@ export const recordsApi = {
       };
     });
   },
-  
+
   /**
    * Get all records
    */
@@ -267,12 +269,12 @@ export const recordsApi = {
     return apiFetch(`/records${params}`, {}, () => {
       const user = db.getCurrentUser();
       if (!user) throw new Error('Not authenticated');
-      
+
       const records = db.getRecords(user.id);
       return limit ? records.slice(0, limit) : records;
     });
   },
-  
+
   /**
    * Get record by ID
    */
@@ -283,7 +285,7 @@ export const recordsApi = {
       return record;
     });
   },
-  
+
   /**
    * Verify record on-chain
    */
@@ -291,12 +293,38 @@ export const recordsApi = {
     return apiFetch(`/records/${id}/verify`, {}, () => {
       const record = db.getRecordById(id);
       if (!record) throw new Error('Record not found');
-      
+
       return {
         verified: true,
         onChainHash: record.ipfsHash,
         timestamp: new Date(record.createdAt).getTime(),
       };
+    });
+  },
+
+  /**
+   * Update record
+   */
+  update: async (id: string, data: Partial<MedicalRecord>): Promise<MedicalRecord> => {
+    return apiFetch(`/records/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }, () => {
+      const updated = db.updateRecord(id, data);
+      if (!updated) throw new Error('Record not found');
+      return updated;
+    });
+  },
+
+  /**
+   * Delete record
+   */
+  delete: async (id: string): Promise<void> => {
+    return apiFetch(`/records/${id}`, {
+      method: 'DELETE',
+    }, () => {
+      const deleted = db.deleteRecord(id);
+      if (!deleted) throw new Error('Record not found');
     });
   },
 };
@@ -316,7 +344,7 @@ export const familyApi = {
     }, () => {
       const user = db.getCurrentUser();
       if (!user) throw new Error('Not authenticated');
-      
+
       const pool: FamilyPool = {
         id: `pool-${Date.now()}`,
         name: data.name,
@@ -334,12 +362,12 @@ export const familyApi = {
         claims: [],
         createdAt: new Date().toISOString(),
       };
-      
+
       db.createFamilyPool(pool);
       return pool;
     });
   },
-  
+
   /**
    * Get family pool
    */
@@ -348,7 +376,7 @@ export const familyApi = {
       return db.getFamilyPool();
     });
   },
-  
+
   /**
    * Fund wallet
    */
@@ -359,12 +387,12 @@ export const familyApi = {
     }, () => {
       const pool = db.getFamilyPool();
       if (!pool) throw new Error('No family pool found');
-      
+
       pool.totalBalance += data.amount;
       db.updateFamilyPool(pool);
-      
+
       const txHash = generateTxHash();
-      
+
       db.addActivity({
         id: `activity-${Date.now()}`,
         type: 'contribution',
@@ -374,11 +402,11 @@ export const familyApi = {
         status: 'success',
         txHash,
       });
-      
+
       return { success: true, txHash };
     });
   },
-  
+
   /**
    * Submit a claim
    */
@@ -395,7 +423,7 @@ export const familyApi = {
       const pool = db.getFamilyPool();
       if (!user) throw new Error('Not authenticated');
       if (!pool) throw new Error('No family pool found');
-      
+
       const claim: Claim = {
         id: `claim-${Date.now()}`,
         poolId: pool.id,
@@ -408,9 +436,9 @@ export const familyApi = {
         hospitalWallet: data.hospitalWallet,
         createdAt: new Date().toISOString(),
       };
-      
+
       db.createClaim(claim);
-      
+
       db.addNotification({
         id: `notif-${Date.now()}`,
         title: 'New Claim Submitted',
@@ -419,11 +447,11 @@ export const familyApi = {
         read: false,
         createdAt: new Date().toISOString(),
       });
-      
+
       return claim;
     });
   },
-  
+
   /**
    * Get claims
    */
@@ -434,7 +462,7 @@ export const familyApi = {
       return db.getClaims(pool.id);
     });
   },
-  
+
   /**
    * Vote on a claim
    */
@@ -445,21 +473,21 @@ export const familyApi = {
     }, () => {
       const claim = db.getClaimById(claimId);
       if (!claim) throw new Error('Claim not found');
-      
+
       const updates: Partial<Claim> = decision
         ? { votesFor: claim.votesFor + 1 }
         : { votesAgainst: claim.votesAgainst + 1 };
-      
+
       // Auto-approve if enough votes
       const pool = db.getFamilyPool();
       if (pool && updates.votesFor && updates.votesFor >= Math.ceil(pool.members.length / 2)) {
         updates.status = 'APPROVED';
         updates.txHash = generateTxHash();
       }
-      
+
       const updated = db.updateClaim(claimId, updates);
       if (!updated) throw new Error('Failed to update claim');
-      
+
       db.addActivity({
         id: `activity-${Date.now()}`,
         type: 'vote',
@@ -468,7 +496,7 @@ export const familyApi = {
         timestamp: new Date().toISOString(),
         status: 'success',
       });
-      
+
       return updated;
     });
   },
@@ -485,7 +513,7 @@ export const drugsApi = {
   verify: async (nafdacNumber: string): Promise<DrugVerification> => {
     return apiFetch(`/drugs/verify/${nafdacNumber}`, {}, () => {
       const drug = mockDrugDatabase[nafdacNumber.toUpperCase()];
-      
+
       if (drug) {
         db.addActivity({
           id: `activity-${Date.now()}`,
@@ -495,10 +523,10 @@ export const drugsApi = {
           timestamp: new Date().toISOString(),
           status: drug.status === 'VERIFIED' ? 'success' : 'failed',
         });
-        
+
         return drug;
       }
-      
+
       return {
         status: 'NOT_FOUND',
         nafdacNumber,
@@ -519,11 +547,11 @@ export const dashboardApi = {
     return apiFetch('/dashboard/stats', {}, () => {
       const user = db.getCurrentUser();
       if (!user) throw new Error('Not authenticated');
-      
+
       const records = db.getRecords(user.id);
       const pool = db.getFamilyPool();
       const claims = pool ? db.getClaims(pool.id) : [];
-      
+
       return {
         totalRecords: records.length,
         poolBalance: pool?.totalBalance || 0,
@@ -532,7 +560,7 @@ export const dashboardApi = {
       };
     });
   },
-  
+
   /**
    * Get recent activities
    */
@@ -563,7 +591,7 @@ export const hospitalApi = {
     }, () => {
       const user = db.getCurrentUser();
       if (!user || user.role !== 'HOSPITAL') throw new Error('Not authorized');
-      
+
       const invoice: HospitalInvoice = {
         id: `invoice-${Date.now()}`,
         patientWallet: data.patientWallet,
@@ -574,12 +602,12 @@ export const hospitalApi = {
         status: 'pending',
         createdAt: new Date().toISOString(),
       };
-      
+
       db.createInvoice(invoice);
       return invoice;
     });
   },
-  
+
   /**
    * Get invoices
    */
@@ -603,7 +631,7 @@ export const notificationsApi = {
       return db.getNotifications();
     });
   },
-  
+
   /**
    * Mark notification as read
    */
@@ -614,4 +642,78 @@ export const notificationsApi = {
       db.markNotificationRead(id);
     });
   },
+};
+
+// ============================================
+// Identity & QR APIs
+// ============================================
+
+export const identityApi = {
+  /**
+   * Get public profile by token
+   */
+  getPublicProfile: async (userId: string, token: string): Promise<{ user: User; records: MedicalRecord[] }> => {
+    return apiFetch(`/identity/${userId}/${token}`, {}, () => {
+      const user = db.getUserById(userId);
+
+      // Security check: Verify user exists, token matches, and QR access is enabled
+      if (!user) throw new Error('Identity not found');
+      if (!user.isQrEnabled) throw new Error('Public access is disabled for this identity');
+      if (user.qrToken !== token) throw new Error('Invalid or expired access token');
+
+      // Return only safe public info
+      const publicUser: User = {
+        ...user,
+        passwordHash: undefined, // Ensure these are never sent
+        encryptedPKey: undefined,
+      } as User;
+
+      const records = db.getRecords(userId);
+
+      return {
+        user: publicUser,
+        records
+      };
+    });
+  },
+
+  /**
+   * Reset QR Token
+   */
+  resetQrCode: async (): Promise<string> => {
+    return apiFetch('/identity/reset-qr', { method: 'POST' }, () => {
+      const user = db.getCurrentUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const newToken = `qt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+      // Update in "DB"
+      const updatedUser = { ...user, qrToken: newToken };
+      db.updateUser(user.id, { qrToken: newToken });
+
+      // Also update current session user
+      db.setCurrentUser(updatedUser);
+
+      return newToken;
+    });
+  },
+
+  /**
+   * Toggle QR Access
+   */
+  toggleQrAccess: async (enabled: boolean): Promise<void> => {
+    return apiFetch('/identity/toggle-access', {
+      method: 'POST',
+      body: JSON.stringify({ enabled })
+    }, () => {
+      const user = db.getCurrentUser();
+      if (!user) throw new Error('Not authenticated');
+
+      // Update in "DB"
+      db.updateUser(user.id, { isQrEnabled: enabled });
+
+      // Also update current session user
+      db.setCurrentUser({ ...user, isQrEnabled: enabled });
+    });
+  }
 };

@@ -26,6 +26,9 @@ export interface User {
   familyPoolId?: string;
   createdAt: string;
   avatar?: string;
+  // QR Identity
+  qrToken?: string;
+  isQrEnabled?: boolean;
 }
 
 // Auth Response

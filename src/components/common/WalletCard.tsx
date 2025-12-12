@@ -71,7 +71,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => window.open(`https://polygonscan.com/address/${walletAddress}`, '_blank')}
+                onClick={() => window.open(`https://amoy.polygonscan.com/address/${walletAddress}`, '_blank')}
                 className="text-hero-foreground/70 hover:text-hero-foreground hover:bg-hero-foreground/10"
               >
                 <ExternalLink className="h-4 w-4" />

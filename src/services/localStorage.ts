@@ -3,19 +3,19 @@
  * Simulates a database for demo mode
  */
 
-import type { 
-  User, 
-  MedicalRecord, 
-  FamilyPool, 
-  Claim, 
+import type {
+  User,
+  MedicalRecord,
+  FamilyPool,
+  Claim,
   ActivityItem,
   AppNotification,
-  HospitalInvoice 
+  HospitalInvoice
 } from '@/types';
-import { 
-  mockUsers, 
-  mockMedicalRecords, 
-  mockFamilyPool, 
+import {
+  mockUsers,
+  mockMedicalRecords,
+  mockFamilyPool,
   mockClaims,
   mockActivityItems,
   mockNotifications,
@@ -40,7 +40,7 @@ const STORAGE_KEYS = {
  */
 export const initializeDemoDb = (): void => {
   const isInitialized = localStorage.getItem(STORAGE_KEYS.INITIALIZED);
-  
+
   if (!isInitialized) {
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(mockUsers));
     localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(mockMedicalRecords));
@@ -99,6 +99,16 @@ export const createUser = (user: User): User => {
   return user;
 };
 
+export const updateUser = (id: string, updates: Partial<User>): User | null => {
+  const users = getUsers();
+  const index = users.findIndex(u => u.id === id);
+  if (index === -1) return null;
+
+  users[index] = { ...users[index], ...updates };
+  setItem(STORAGE_KEYS.USERS, users);
+  return users[index];
+};
+
 export const getCurrentUser = (): User | null => {
   return getItem<User | null>(STORAGE_KEYS.CURRENT_USER, null);
 };
@@ -135,6 +145,26 @@ export const createRecord = (record: MedicalRecord): MedicalRecord => {
   records.unshift(record);
   setItem(STORAGE_KEYS.RECORDS, records);
   return record;
+};
+
+export const updateRecord = (id: string, updates: Partial<MedicalRecord>): MedicalRecord | null => {
+  const records = getRecords();
+  const index = records.findIndex(r => r.id === id);
+  if (index === -1) return null;
+
+  records[index] = { ...records[index], ...updates };
+  setItem(STORAGE_KEYS.RECORDS, records);
+  return records[index];
+};
+
+export const deleteRecord = (id: string): boolean => {
+  const records = getRecords();
+  const index = records.findIndex(r => r.id === id);
+  if (index === -1) return false;
+
+  records.splice(index, 1);
+  setItem(STORAGE_KEYS.RECORDS, records);
+  return true;
 };
 
 // Family Pool Operations
@@ -176,7 +206,7 @@ export const updateClaim = (id: string, updates: Partial<Claim>): Claim | null =
   const claims = getClaims();
   const index = claims.findIndex(c => c.id === id);
   if (index === -1) return null;
-  
+
   claims[index] = { ...claims[index], ...updates };
   setItem(STORAGE_KEYS.CLAIMS, claims);
   return claims[index];
