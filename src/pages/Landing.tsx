@@ -134,7 +134,7 @@ export const LandingPage: React.FC = () => {
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 <Link to="/login">
                   <Button size="lg" className="gap-2">
-                    <ArrowRight className="h-5 w-5"/>
+                    <ArrowRight className="h-5 w-5" />
                     Sign In
                   </Button>
                 </Link>

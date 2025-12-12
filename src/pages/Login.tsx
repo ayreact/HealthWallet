@@ -175,36 +175,6 @@ export const LoginPage: React.FC = () => {
                 </Button>
               </form>
 
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">Or try demo</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => handleDemoLogin('PATIENT')}
-                  disabled={isLoading}
-                  className="text-sm"
-                >
-                  Patient Demo
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => handleDemoLogin('HOSPITAL')}
-                  disabled={isLoading}
-                  className="text-sm"
-                >
-                  Hospital Demo
-                </Button>
-              </div>
-
               <p className="mt-6 text-center text-sm text-muted-foreground">
                 Don't have an account?{' '}
                 <Link to="/register" className="text-primary hover:underline font-medium">
