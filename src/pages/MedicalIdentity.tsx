@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { FileText, Shield, User as UserIcon, Calendar, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +9,10 @@ import { InlineLoader } from '@/components/common/HealthLoader';
 import { format } from 'date-fns';
 
 export const MedicalIdentity: React.FC = () => {
-    const { userId, token } = useParams<{ userId: string; token: string }>();
+    const { userId } = useParams<{ userId: string }>();
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get('token');
+
     const [user, setUser] = useState<User | null>(null);
     const [records, setRecords] = useState<MedicalRecord[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -17,7 +20,11 @@ export const MedicalIdentity: React.FC = () => {
 
     useEffect(() => {
         const loadIdentity = async () => {
-            if (!userId || !token) return;
+            if (!userId || !token) {
+                setError('Invalid link parameters');
+                setIsLoading(false);
+                return;
+            }
 
             try {
                 const data = await identityApi.getPublicProfile(userId, token);
