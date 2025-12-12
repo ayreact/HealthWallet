@@ -89,7 +89,13 @@ export const getUserByEmail = (email: string): User | undefined => {
 
 export const getUserById = (id: string): User | undefined => {
   const users = getUsers();
-  return users.find(u => u.id === id);
+  const user = users.find(u => u.id === id);
+  if (user) {
+    // Backfill defaults if missing (for demo data compatibility)
+    if (user.isQrEnabled === undefined) user.isQrEnabled = true;
+    if (!user.qrToken) user.qrToken = 'demo-token-placeholder';
+  }
+  return user;
 };
 
 export const createUser = (user: User): User => {

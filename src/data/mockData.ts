@@ -1,12 +1,12 @@
-import type { 
-  User, 
-  MedicalRecord, 
-  FamilyPool, 
-  Claim, 
+import type {
+  User,
+  MedicalRecord,
+  FamilyPool,
+  Claim,
   ActivityItem,
   DrugVerification,
   AppNotification,
-  DashboardStats 
+  DashboardStats
 } from '@/types';
 
 // Generate a fake wallet address
@@ -50,7 +50,9 @@ export const mockUsers: User[] = [
     walletAddress: '0x745a0d1c99dcc7c1016de17847db76b5852aacd6',
     familyPoolId: 'pool-1',
     createdAt: '2024-01-15T10:00:00Z',
-    avatar: undefined
+    avatar: undefined,
+    qrToken: 'demo-token-placeholder',
+    isQrEnabled: true,
   },
   {
     id: 'user-2',
@@ -60,7 +62,9 @@ export const mockUsers: User[] = [
     role: 'DOCTOR',
     walletAddress: '0x8ba1f109551bD432803012645Ac136ddd64DBA72',
     createdAt: '2024-01-10T09:00:00Z',
-    avatar: undefined
+    avatar: undefined,
+    qrToken: 'demo-token-placeholder',
+    isQrEnabled: true,
   },
   {
     id: 'user-3',
@@ -70,7 +74,9 @@ export const mockUsers: User[] = [
     role: 'HOSPITAL',
     walletAddress: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
     createdAt: '2024-01-05T08:00:00Z',
-    avatar: undefined
+    avatar: undefined,
+    qrToken: 'demo-token-placeholder',
+    isQrEnabled: true,
   }
 ];
 
